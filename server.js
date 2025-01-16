@@ -50,10 +50,10 @@ app.use(express.urlencoded({ extended: true }));
 // --------------------------------------------------------------------------
 app.get("/", async (req, res) => {
   try {
-    // 1. Get the current camera delays (same as your existing code)
+    // Fetch current delay values (same as before)
     const cameraDelays = await fetchCameraDelays();
 
-    // 2. Build the table rows (same logic you already have for 2 columns)
+    // Build table rows in 2-column steps (same logic)
     let tableRows = "";
     for (let i = 0; i < cameraDelays.length; i += 2) {
       const cam1 = cameraDelays[i];
@@ -70,34 +70,54 @@ app.get("/", async (req, res) => {
       `;
     }
 
-    // 3. Here is the updated HTML with custom <style> for a wider table
+    // Updated HTML/CSS
     const html = `
       <html>
       <head>
         <meta charset="utf-8">
         <title>OBS Render Delay Control</title>
         <style>
-          /* Make the table fill most of the window width */
+          /* Make the table take up a good width, center it, reduce borders */
           table {
             width: 90%;
-            margin: 0 auto;       /* center the table */
+            margin: 0 auto;
             border-collapse: collapse;
+            font-family: sans-serif;
+            font-size: 14px; /* smaller text = less height */
           }
-          /* Force each of the 2 columns to take up 50% of the width */
           td {
             width: 50%;
-            vertical-align: top;  /* align content at the top */
-            padding: 16px;        /* spacing inside each cell */
+            vertical-align: top;
+            border: 1px solid #ccc;
+            padding: 8px; /* reduce padding to save vertical space */
           }
-          /* You can tweak these further as you like */
+          /* Make headings smaller or remove them completely */
           h3 {
-            margin: 0 0 8px 0; 
+            margin: 0 0 4px 0;
+            font-size: 16px; /* slightly smaller heading */
+          }
+          /* Adjust form styles to reduce spacing */
+          form {
+            margin: 4px 0 0 0;
+          }
+          label {
+            font-size: 13px;
+          }
+          input[type="number"] {
+            width: 60px; /* narrower input */
+          }
+          button {
+            font-size: 12px; /* smaller button text */
+            padding: 2px 6px; /* less padding inside button */
+            margin-left: 4px;
           }
         </style>
       </head>
       <body>
-        <h1>OBS Render Delay Control (2 Columns, 8 Cameras)</h1>
-        <table border="1">
+        <h1 style="text-align:center; font-size:20px; margin-bottom:16px;">
+          OBS Render Delay Control (2 Columns)
+        </h1>
+        <table>
           <tbody>
             ${tableRows}
           </tbody>
@@ -106,7 +126,6 @@ app.get("/", async (req, res) => {
       </html>
     `;
 
-    // 4. Send the response
     res.send(html);
   } catch (error) {
     console.error("Error generating page:", error);
